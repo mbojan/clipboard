@@ -1,0 +1,5 @@
+Port toWord from "bojan" as a method for Windows.
+
+Method for Linux can use 'xclip'.
+
+On Mac use a pipe. See Connections.
