@@ -1,10 +1,10 @@
 Package: clipboard
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Author: mbojan
-Version: 1.0
+Maintainer: Michal Bojanowski <michal2992@gmail.com>
+Author: Michal Bojanowski
+Version: 0.0-1
 License: GPL-3
-Title: 
-Description: 
+Title: Facilities to read/write to/from system clipboard.
+Description: Writing tabular information to clipboard.
 Suggests:
     testthat,
     roxygen2
