@@ -9,4 +9,4 @@ Suggests:
     testthat,
     roxygen2
 Collate:
-    'clipboard-package.r'
+    'clipboard-package.R'
