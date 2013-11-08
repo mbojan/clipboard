@@ -10,3 +10,5 @@ Suggests:
     roxygen2
 Collate:
     'clipboard-package.R'
+    'cb.R'
+    'write_cb.R'
