@@ -1,20 +1,10 @@
-#' Writing to system clipboard
-#'
-#' System-independent writing to clipboard for pasting elsewhere
-#'
-#' @param x character, lines of text to be written
-#' @param ... other arguments passed to/from other methods
-#'
-#' @return nothing
-#'
-#' @export
-
 write_cb <- function(x, ...)
 {
   switch( Sys.info()["Sysname"],
          Linux = write_cb_linux(x, ...),
          Windows = write_cb_windows(x, ...),
-         Darwin = write_cb_darwin(x, ...)
+         Darwin = write_cb_darwin(x, ...),
+         stop("unknown operating system: ", Sys.info()["Sysname"])
          )
 }
 
@@ -22,7 +12,7 @@ write_cb <- function(x, ...)
 
 write_cb_windows <- function(x, ...)
 {
-  # TODO use either file connection or 'writeClipboard' function
+  # TODO should we use file connection or 'writeClipboard' function?
   p <- file("clipboard", "w")
   writeLines(x, con=p)
 }
@@ -30,6 +20,7 @@ write_cb_windows <- function(x, ...)
 
 write_cb_linux <- function(x, ...)
 {
+  # TODO xclip needed
   p <- pipe("xclip -i -selection clipboard", "w")
   writeLines(x, con=p)
 }
