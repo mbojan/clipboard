@@ -20,9 +20,24 @@ write_cb_windows <- function(x, ...)
 
 write_cb_linux <- function(x, ...)
 {
-  # TODO xclip needed
+  stopifnot(has_xclip())
   p <- pipe("xclip -i -selection clipboard", "w")
   writeLines(x, con=p)
+}
+
+
+# Check if 'xclip' is available
+has_xclip <- function()
+{
+  ver <- try( system("xclip -version", intern=TRUE) )
+  if( inherits(ver, "try-error") || !grepl("xclip", ver) )
+  {
+    warning("'xclip' is not available")
+    invisible(FALSE)
+  } else
+  {
+    invisible(TRUE)
+  }
 }
 
 
