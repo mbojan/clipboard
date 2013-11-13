@@ -1,3 +1,9 @@
+#============================================================================ 
+# Writing to clipboard
+
+
+# Generic interface for writing to clipboard dispatching to other functions
+# based on the type of the system based on Sys.info()
 write_cb <- function(x, ...)
 {
   switch( Sys.info()["Sysname"],
@@ -10,18 +16,22 @@ write_cb <- function(x, ...)
 
 
 
-write_cb_windows <- function(x, ...)
+# On Windows
+write_cb_windows <- function(x, condesc=getOption("clipboard.write"), ...)
 {
-  # TODO should we use file connection or 'writeClipboard' function?
-  p <- file("clipboard", "w")
+  if(is.null(condesc)) condesc <- "clipboard"
+  p <- file(condesc, "w")
   writeLines(x, con=p)
+  close(p)
 }
 
 
-write_cb_linux <- function(x, ...)
+# On Unix-like systems use 'xclip'
+write_cb_linux <- function(x, condesc=getOption("clipboard.write"), ...)
 {
+  if(is.null(condesc)) condesc <- "xclip -i -selection clipboard"
   stopifnot(has_xclip())
-  p <- pipe("xclip -i -selection clipboard", "w")
+  p <- pipe(condesc, "w")
   writeLines(x, con=p)
 }
 
@@ -41,8 +51,42 @@ has_xclip <- function()
 }
 
 
-write_cb_darwin <- function(x, ...)
+# On MacOS
+write_cb_darwin <- function(x, condesc=getOption("clipboard.write"), ...)
 {
-  p <- pipe("pbcopy", "w")
+  if(is.null(condesc)) condesc <- "pbcopy"
+  p <- pipe(condesc, "w")
   writeLines(x, con=p)
+}
+
+
+
+
+
+#============================================================================ 
+# Reading from clipboard
+#============================================================================ 
+
+
+
+
+# Generic interface for reading to clipboard dispatching to other functions
+# based on the type of the system based on Sys.info()
+read_cb <- function(x, ...)
+{
+  switch( Sys.info()["Sysname"],
+         Linux = read_cb_linux(x, ...),
+         Windows = read_cb_windows(x, ...),
+         Darwin = read_cb_darwin(x, ...),
+         stop("unknown operating system: ", Sys.info()["Sysname"])
+         )
+}
+
+# Reading Windows clipboard
+read_cb_windows <- function(x, condesc=getOption("clipboard.read"), ...)
+{
+  if(is.null(condesc)) condesc <- "clipboard"
+  p <- file(condesc, "r")
+  on.exit(close(p))
+  readLines(x, con=p)
 }
