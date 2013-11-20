@@ -1,1 +1,7 @@
+S3method(cb,data.frame)
+S3method(cb,default)
+S3method(cb,matrix)
+S3method(cb,table)
 export(cb)
+export(read_cb)
+export(write_cb)
