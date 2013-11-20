@@ -1,12 +1,41 @@
-#============================================================================ 
-# Writing to clipboard
+#' Portable read/write access to system clipboard
+#'
+#' These functions aim at providing portable way of reading and writing to
+#' system clipboard. The primary motivation was to smooth the process of
+#' copy-pasting computation results from R to Office programs (MSWord,
+#' LibreOffice, etc.).
+#' 
+#' @param x object to be written, it is coerced to character
+#' @param condesc connection description, defaults are system-specific, see Details
+#'
+#' \code{write_cb} expects a single argument which is written into the
+#' clipboard after being converted to character. Writing is performed via a
+#' connection description of which can be specified with \code{condesc} or the
+#' \code{clipboard.write} option.  Defaults are system-specific, see below.
+#'
+#' \code{read_cb} can be called without any arguments. Reading is performed via
+#' a connection description of which can be specified with \code{condesc} or
+#' \code{clipboard.read} option.  Defaults are system specific, see below.
+#'
+#' Interaction with system clipboard is very much system-dependent. The
+#' particular method used depends on the type of the operating system, which is
+#' queried from \code{Sys.info()["sysname"]}.
+#'
+#' @return
+#' For \code{write_cb} it is \code{NULL}.
+#'
+#' For \code{read_cb}, it is a character vector with lines of content of the
+#' clipboard.
+#'
+#' @references
+#' Program \code{xclip} \url{http://sourceforge.net/projects/xclip}
+#'
+#' @export
 
-
-# Generic interface for writing to clipboard dispatching to other functions
-# based on the type of the system based on Sys.info()
 write_cb <- function(x, ...)
 {
-  switch( Sys.info()["Sysname"],
+  x <- as.character(x)
+  switch( Sys.info()["sysname"],
          Linux = write_cb_linux(x, ...),
          Windows = write_cb_windows(x, ...),
          Darwin = write_cb_darwin(x, ...),
@@ -16,22 +45,28 @@ write_cb <- function(x, ...)
 
 
 
-# On Windows
-write_cb_windows <- function(x, condesc=getOption("clipboard.write"), ...)
+#' @details
+#' On Windows writing to clipboard is performed via \code{file} connection.
+#' Default description is \code{clipboard}.
+write_cb_windows <- function(x, condesc=getOption("clipboard.write", "clipboard"), ...)
 {
-  if(is.null(condesc)) condesc <- "clipboard"
   p <- file(condesc, "w")
+  on.exit(close(p))
   writeLines(x, con=p)
-  close(p)
 }
 
 
-# On Unix-like systems use 'xclip'
-write_cb_linux <- function(x, condesc=getOption("clipboard.write"), ...)
+#' @details
+#' On Unix-like systems a small program \code{xclip} has to be installed, see
+#' References below. Writing is performed via a \code{pipe} with description
+#' \code{xclip -i -selection clipboard}.  By default we are using X selection
+#' \code{clipboard}. Alternatives are \code{XA_PRIMARY} or \code{XA_SECONDARY}.
+#' Consult further documentation of \code{xclip}.
+write_cb_linux <- function(x, condesc=getOption("clipboard.write", "xclip -i -selection clipboard"), ...)
 {
-  if(is.null(condesc)) condesc <- "xclip -i -selection clipboard"
   stopifnot(has_xclip())
   p <- pipe(condesc, "w")
+  on.exit(close(p))
   writeLines(x, con=p)
 }
 
@@ -39,54 +74,70 @@ write_cb_linux <- function(x, condesc=getOption("clipboard.write"), ...)
 # Check if 'xclip' is available
 has_xclip <- function()
 {
-  ver <- try( system("xclip -version", intern=TRUE) )
+  ver <- try( system("xclip -version 2>&1", intern=TRUE) )
   if( inherits(ver, "try-error") || !grepl("xclip", ver) )
   {
     warning("'xclip' is not available")
-    invisible(FALSE)
+    return(FALSE)
   } else
   {
-    invisible(TRUE)
+    return(TRUE)
   }
 }
 
 
-# On MacOS
-write_cb_darwin <- function(x, condesc=getOption("clipboard.write"), ...)
+#' @details
+#' On MacOS writing is performed via \code{pipe} using \code{pbcopy} description
+#' by default.
+write_cb_darwin <- function(x, condesc=getOption("clipboard.write", "pbcopy"), ...)
 {
-  if(is.null(condesc)) condesc <- "pbcopy"
   p <- pipe(condesc, "w")
+  on.exit(close(p))
   writeLines(x, con=p)
 }
-
-
-
-
 
 #============================================================================ 
 # Reading from clipboard
 #============================================================================ 
 
 
-
-
-# Generic interface for reading to clipboard dispatching to other functions
-# based on the type of the system based on Sys.info()
-read_cb <- function(x, ...)
+#' @export
+#' @rdname write_cb
+#' @alias read_cb
+read_cb <- function(...)
 {
-  switch( Sys.info()["Sysname"],
-         Linux = read_cb_linux(x, ...),
-         Windows = read_cb_windows(x, ...),
-         Darwin = read_cb_darwin(x, ...),
+  switch( Sys.info()["sysname"],
+         Linux = read_cb_linux(...),
+         Windows = read_cb_windows(...),
+         Darwin = read_cb_darwin(...),
          stop("unknown operating system: ", Sys.info()["Sysname"])
          )
 }
 
-# Reading Windows clipboard
-read_cb_windows <- function(x, condesc=getOption("clipboard.read"), ...)
+#' @details
+#' Reading Windows clipboard uses \code{file} connection with description \code{clipboard}.
+read_cb_windows <- function(condesc=getOption("clipboard.read", "clipboard"), ...)
 {
-  if(is.null(condesc)) condesc <- "clipboard"
   p <- file(condesc, "r")
   on.exit(close(p))
-  readLines(x, con=p)
+  readLines(con=p)
+}
+
+# @details
+# Reading clipboard on Linux is performed via a \code{pipe} and \code{xclip} program.
+read_cb_linux <- function( condesc = getOption("clipboard.read", "xclip -o -selection clipboard"), ...)
+{
+  stopifnot(has_xclip())
+  p <- pipe(condesc, "r")
+  on.exit(close(p))
+  readLines(con=p)
+}
+
+#' @details
+#' Reading clipboard on MacOS uses \code{pipe} with description \code{pbcopy}.
+read_cb_darwin <- function(condesc=getOption("clipboard.read", "pbcopy"))
+{
+  p <- pipe(condesc, "r")
+  on.exit(close(p))
+  readLines(con=p)
 }
