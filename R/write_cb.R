@@ -8,15 +8,6 @@
 #' @param x object to be written, it is coerced to character
 #' @param condesc connection description, defaults are system-specific, see Details
 #'
-#' \code{write_cb} expects a single argument which is written into the
-#' clipboard after being converted to character. Writing is performed via a
-#' connection description of which can be specified with \code{condesc} or the
-#' \code{clipboard.write} option.  Defaults are system-specific, see below.
-#'
-#' \code{read_cb} can be called without any arguments. Reading is performed via
-#' a connection description of which can be specified with \code{condesc} or
-#' \code{clipboard.read} option.  Defaults are system specific, see below.
-#'
 #' Interaction with system clipboard is very much system-dependent. The
 #' particular method used depends on the type of the operating system, which is
 #' queried from \code{Sys.info()["sysname"]}.
@@ -30,8 +21,14 @@
 #' @references
 #' Program \code{xclip} \url{http://sourceforge.net/projects/xclip}
 #'
-#' @export
 
+#' @details
+#' \code{write_cb} expects a single argument which is written into the
+#' clipboard after being converted to character. Writing is performed via a
+#' connection description of which can be specified with \code{condesc} or the
+#' \code{clipboard.write} option.  Defaults are system-specific, see below.
+#' @export
+#' @rdname write_cb
 write_cb <- function(x, ...)
 {
   x <- as.character(x)
@@ -39,6 +36,22 @@ write_cb <- function(x, ...)
          Linux = write_cb_linux(x, ...),
          Windows = write_cb_windows(x, ...),
          Darwin = write_cb_darwin(x, ...),
+         stop("unknown operating system: ", Sys.info()["Sysname"])
+         )
+}
+
+#' @details
+#' \code{read_cb} can be called without any arguments. Reading is performed via
+#' a connection description of which can be specified with \code{condesc} or
+#' \code{clipboard.read} option.  Defaults are system specific, see below.
+#' @export
+#' @rdname write_cb
+read_cb <- function(...)
+{
+  switch( Sys.info()["sysname"],
+         Linux = read_cb_linux(...),
+         Windows = read_cb_windows(...),
+         Darwin = read_cb_darwin(...),
          stop("unknown operating system: ", Sys.info()["Sysname"])
          )
 }
@@ -100,19 +113,6 @@ write_cb_darwin <- function(x, condesc=getOption("clipboard.write", "pbcopy"), .
 # Reading from clipboard
 #============================================================================ 
 
-
-#' @export
-#' @rdname write_cb
-#' @alias read_cb
-read_cb <- function(...)
-{
-  switch( Sys.info()["sysname"],
-         Linux = read_cb_linux(...),
-         Windows = read_cb_windows(...),
-         Darwin = read_cb_darwin(...),
-         stop("unknown operating system: ", Sys.info()["Sysname"])
-         )
-}
 
 #' @details
 #' Reading Windows clipboard uses \code{file} connection with description \code{clipboard}.
