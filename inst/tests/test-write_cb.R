@@ -1,6 +1,6 @@
-context("Writing and reading clipboard on Linux")
+context("Low-level writing and reading to/from clipboard")
 
-test_that("Simple character vector is correctly written and read", {
+test_that("Character vector is correctly written and read", {
           ch <- "ala ma kota"
           write_cb(ch)
           r <- read_cb()
@@ -8,7 +8,7 @@ test_that("Simple character vector is correctly written and read", {
 } )
 
 
-test_that("Simple numeric vector is correctly written and read", {
+test_that("Numeric vector is correctly written and read", {
           x <- 1:5
           write_cb(x)
           r <-read_cb()
