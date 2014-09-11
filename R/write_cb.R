@@ -87,18 +87,26 @@ read_cb <- function(...)
 
 
 # Check if 'xclip' is available
-has_xclip <- function()
+has_xclip <- function(version=FALSE)
 {
   ver <- try( system("xclip -version 2>&1", intern=TRUE), silent=TRUE)
   if( inherits(ver, "try-error") || !grepl("xclip", ver) )
   {
-    warning("'xclip' is not available")
-    return(FALSE)
+    rval <- FALSE
   } else
   {
-    return(TRUE)
+    if( version )
+    {
+      rval <- ver[1]
+    } else
+    {
+      rval <- TRUE
+    }
   }
+  return(rval)
 }
+
+
 
 
 #============================================================================ 
