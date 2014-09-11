@@ -5,10 +5,7 @@ Version: 0.0-1
 License: GPL-3
 Title: Facilities to read/write to/from system clipboard.
 Description: Writing tabular information to clipboard.
+SystemRequirements: xclip
 Suggests:
     testthat,
     roxygen2
-Collate:
-    'clipboard-package.R'
-    'cb.R'
-    'write_cb.R'
