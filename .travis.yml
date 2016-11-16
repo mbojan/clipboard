@@ -1,22 +1,16 @@
 language: r
-
 r:
 - release
 - devel
-
 sudo: false
 cache: packages
-
 addons:
   apt:
     packages:
-      - xclip
-
+    - xclip
 notifications:
   email:
     on_success: change
     on_failure: always
-  slack: icmuw:1I1WbUCGw88uCVlfrgwyRpGT
-    secure: B2TF06mI+FwB9xUI40A03rk+7t1X+d/Y1AqIs1sXFneT77OYeKJLYbcNaxLJWMczHmJGcfhEN9kzaBLs2PoPUZEUL0A79fpMExTv4xr3kvo5SEKkXerrfr2/TuKhDiQAVOOKPzGlQY4txB1mS+CN2gUx4nJbCutsZfc4vfZmykw=
-    on_success: change
-    on_failure: always
+  slack:
+    secure: eEKXAlC0xGLwKGrRnrvshPyLnPPCTfMCA2EPGCldxZ6+JC23KWnj+Z7q63AuyKIa7ndKiOr1C2BOeXBD6oSOx+ESiLMLJ1ONE2O0Fupf9xn3jkSAb4NmtT8wP64Gga+Pq0NBaMEgGG1E99BRta/nssz6UKjKHbZ/52Iap9xPwoo=
