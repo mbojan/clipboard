@@ -1,3 +1,3 @@
 library(testthat)
 library(clipboard)
-test_package("clipboard")
+test_check("clipboard")
