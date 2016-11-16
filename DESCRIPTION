@@ -3,7 +3,7 @@ Maintainer: Michal Bojanowski <michal2992@gmail.com>
 Author: Michal Bojanowski
 Version: 0.0-1
 License: GPL-3
-Title: Facilities to read/write to/from system clipboard.
+Title: Facilities to read/write to/from system clipboard
 Description: Writing tabular information to clipboard.
 SystemRequirements: xclip
 Suggests:
