@@ -2,8 +2,8 @@ context("Low-level writing and reading to/from clipboard")
 
 test_that("Character vector is correctly written and read", {
   
-  skip_if_not( Sys.info()[["sysname"]] != "linux" && has_xclip() )
-  
+  skip_on_travis()
+
   ch <- "ala ma kota"
   write_cb(ch)
   r <- read_cb()
@@ -13,8 +13,8 @@ test_that("Character vector is correctly written and read", {
 
 test_that("Numeric vector is correctly written and read", {
   
-  skip_if_not( Sys.info()[["sysname"]] != "linux" && has_xclip() )
-  
+  skip_on_travis()
+
   x <- 1:5
   write_cb(x)
   r <-read_cb()
