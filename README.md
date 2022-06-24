@@ -1,11 +1,9 @@
-# clipboard: R package making copy-pasting easy
+# `clipboard`: R package making copy-pasting easy
 
-
-[![Build Status](https://travis-ci.org/mbojan/clipboard.png?branch=master)](https://travis-ci.org/mbojan/clipboard)
-[![Build Status](https://ci.appveyor.com/api/projects/status/yac98fafds7i65ci?svg=true)](https://ci.appveyor.com/project/mbojan/clipboardalluvial)
-[![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/clipboard?color=2ED968)](http://cranlogs.r-pkg.org/)
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/mbojan/clipboard/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/mbojan/clipboard/actions/workflows/R-CMD-check.yaml)
 [![cran version](http://www.r-pkg.org/badges/version/clipboard)](https://cran.r-project.org/package=clipboard)
-
+<!-- badges: end -->
 
 Package "clipboard" provide a portable way of interacting with system
 clipboard. You can write content into a clipboard to be able to paste it into
