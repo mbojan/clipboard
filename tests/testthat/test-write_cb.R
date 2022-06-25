@@ -1,9 +1,5 @@
-context("Low-level writing and reading to/from clipboard")
-
 test_that("Character vector is correctly written and read", {
-  
-  skip_on_travis()
-
+  skip_on_ci()
   ch <- "ala ma kota"
   write_cb(ch)
   r <- read_cb()
@@ -12,9 +8,7 @@ test_that("Character vector is correctly written and read", {
 
 
 test_that("Numeric vector is correctly written and read", {
-  
-  skip_on_travis()
-
+  skip_on_ci()
   x <- 1:5
   write_cb(x)
   r <-read_cb()
