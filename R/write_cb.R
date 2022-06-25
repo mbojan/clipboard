@@ -90,7 +90,7 @@ read_cb <- function(...)
 has_xclip <- function(version=FALSE)
 {
   ver <- try( system("xclip -version 2>&1", intern=TRUE), silent=TRUE)
-  if( inherits(ver, "try-error") || !grepl("xclip", ver) )
+  if( inherits(ver, "try-error") || !any(grepl("xclip", ver)) )
   {
     rval <- FALSE
   } else
